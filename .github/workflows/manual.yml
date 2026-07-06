@@ -31,9 +31,9 @@ jobs:
     runs-on: ubuntu-latest
     if: |
       ${{
-      github.event_name == 'pull_request' ||
-      (github.event_name == 'workflow_dispatch' && inputs.job_type == 'plan')
-    }}
+        github.event_name == 'pull_request' ||
+        (github.event_name == 'workflow_dispatch' && inputs.job_type == 'plan')
+      }}
     steps:
       - uses: actions/checkout@v4
       - name: Run linter
