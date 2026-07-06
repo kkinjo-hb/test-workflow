@@ -29,7 +29,7 @@ on:
 jobs:
   plan:
     runs-on: ubuntu-latest
-    if: |
+    if: >
 	  github.event_name == 'pull_request' ||
 	  (github.event_name == 'workflow_dispatch' && inputs.job_type == 'plan')
     steps:
@@ -40,7 +40,7 @@ jobs:
 
   apply:
     runs-on: ubuntu-latest
-    if: |
+    if: >
 	  github.event_name == 'pull_request' ||
 	  (github.event_name == 'workflow_dispatch' && inputs.job_type == 'plan')
     steps:
