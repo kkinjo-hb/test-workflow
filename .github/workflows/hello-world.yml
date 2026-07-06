@@ -1,0 +1,30 @@
+# ワークフローの名前
+name: GitHub Actions Demo
+
+# トリガー（どのイベントでこの自動化を実行するか）
+on:
+  push:
+    branches: [ "main" ] # mainブランチにプッシュされた時
+
+# 実行する処理の中身
+jobs:
+  build-and-test:
+    # 実行する環境（仮想マシン）のOS
+    runs-on: ubuntu-latest
+
+    # 具体的な手順（ステップ）
+    steps:
+      # 1. リポジトリのコードを仮想マシンにチェックアウト（コピー）する
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. 画面にメッセージを表示する
+      - name: Run a one-line script
+        run: echo "こんにちは！GitHub Actionsが正常に動いています！"
+
+      # 3. 複数のコマンドを実行してみる
+      - name: Run a multi-line script
+        run: |
+          echo "ステップ1: 環境の確認"
+          node -v
+          echo "ステップ2: 完了！"
