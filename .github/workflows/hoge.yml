@@ -1,0 +1,41 @@
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'envs/test/**'
+  push:
+    branches:
+      - main
+    paths:
+      - 'envs/test/**'
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: "手動実行理由"
+        required: true
+        type: string
+      job_type:
+        description: "実行するジョブ (plan: 差分確認のみ / apply: インフラ反映)"
+        required: true
+        default: "apply"
+        type: choice
+        options:
+          - plan
+          - apply
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run linter
+        run: echo "plan test"
+
+
+  apply:
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run linter
+        run: echo "apply test"
+
