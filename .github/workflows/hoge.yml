@@ -1,3 +1,5 @@
+name: 手動テスト
+
 on:
   pull_request:
     branches:
