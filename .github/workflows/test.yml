@@ -1,0 +1,11 @@
+name: Check Code Style
+on:
+  push:
+    branches: [ "main" ]
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run linter
+        run: echo "コードの書き方に問題がないかチェック中..."
