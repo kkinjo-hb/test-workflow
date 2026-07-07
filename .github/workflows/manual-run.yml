@@ -36,6 +36,16 @@ jobs:
       }}
     steps:
       - uses: actions/checkout@v4
+      - name:  実行ログの記録
+        run: |
+          echo "==== ワークフロー実行情報 ===="
+          echo "実行イベント: ${{ github.event_name }}"
+          echo "実行した人: ${{ github.actor }}"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "手動実行理由: ${{ inputs.reason }}"
+            echo "選択ジョブ: ${{ inputs.job_type }}"
+          fi
+          echo "=============================="
       - name: Run linter
         run: echo "plan test"
 
