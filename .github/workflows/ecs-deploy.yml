@@ -5,6 +5,7 @@ on:
     branches:
       - main # mainブランチにプッシュされた時に実行
 
+
 env:
   AWS_REGION: ap-northeast-1                   # 東京リージョンの場合
   ECR_REPOSITORY: my-ecr-repo-name             # ECRリポジトリ名
