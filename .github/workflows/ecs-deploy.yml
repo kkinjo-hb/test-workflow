@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main # mainブランチにプッシュされた時に実行
-  workflow_dispatch:
-      - main # mainブランチにプッシュされた時に実行
 
 
 env:
