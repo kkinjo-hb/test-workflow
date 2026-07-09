@@ -1,0 +1,66 @@
+name: Deploy to Amazon ECS
+
+on:
+  push:
+    branches:
+      - main # mainブランチにプッシュされた時に実行
+
+env:
+  AWS_REGION: ap-northeast-1                   # 東京リージョンの場合
+  ECR_REPOSITORY: my-ecr-repo-name             # ECRリポジトリ名
+  ECS_SERVICE: my-ecs-service-name             # ECSサービス名
+  ECS_CLUSTER: my-ecs-cluster-name             # ECSクラスター名
+  ECS_TASK_DEFINITION: aws/task-definition.json # タスク定義ファイルのパス
+  CONTAINER_NAME: my-container-name            # タスク定義内のコンテナ名
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. コードのチェックアウト
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    # 2. AWS 認証
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    # 3. Amazon ECR へのログイン
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+
+    # 4. Dockerイメージのビルド・タグ付け・ECRへのプッシュ
+    - name: Build, tag, and push image to Amazon ECR
+      id: build-image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        IMAGE_TAG: ${{ github.sha }} # コミットハッシュをタグにする
+      run: |
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+    # 5. ECSタスク定義のイメージ書き換え
+    - name: Fill in the new image ID in the Amazon ECS task definition
+      id: task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: ${{ env.ECS_TASK_DEFINITION }}
+        container-name: ${{ env.CONTAINER_NAME }}
+        image: ${{ steps.build-image.outputs.image }}
+
+    # 6. ECSタスク定義の更新とサービスのデプロイ
+    - name: Deploy Amazon ECS task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+      with:
+        task-definition: ${{ steps.task-def.outputs.task-definition }}
+        service: ${{ env.ECS_SERVICE }}
+        cluster: ${{ env.ECS_CLUSTER }}
+        wait-for-service-stability: true # デプロイ完了（安定）を待つ
