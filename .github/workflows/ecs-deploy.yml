@@ -9,8 +9,8 @@ on:
 env:
   AWS_REGION: ap-northeast-1                   # 東京リージョンの場合
   ECR_REPOSITORY: github-test/demo 	           # ECRリポジトリ名
-  ECS_SERVICE: my-ecs-service-name             # ECSサービス名
-  ECS_CLUSTER: my-ecs-cluster-name             # ECSクラスター名
+  ECS_SERVICE: github-action-test-service             # ECSサービス名
+  ECS_CLUSTER: github-action-test-cluster             # ECSクラスター名
   ECS_TASK_DEFINITION: aws/task-definition.json # タスク定義ファイルのパス
   CONTAINER_NAME: my-container-name            # タスク定義内のコンテナ名
 
